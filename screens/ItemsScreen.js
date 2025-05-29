@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Text,
   View,
@@ -10,7 +10,7 @@ import {
 import { GlobalLayout } from "../components/Layout";
 import { GlobalStyles } from "../styles/global";
 import { Feather } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import PageHeader from "../components/PageHeader";
 
 export default function ItemsScreen() {
@@ -25,6 +25,7 @@ export default function ItemsScreen() {
 
   const fetchItems = async () => {
     try {
+      console.log("Fetching items...");
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_BASE_URL}/api/items`,
         {
@@ -38,6 +39,7 @@ export default function ItemsScreen() {
 
       if (response.ok) {
         const data = await response.json();
+        console.log(data.items.length);
         setItems(data.items);
 
         Animated.timing(fadeAnim, {
@@ -53,9 +55,11 @@ export default function ItemsScreen() {
     }
   };
 
-  useEffect(() => {
-    fetchItems();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchItems();
+    }, [])
+  );
 
   return (
     <GlobalLayout>

@@ -111,7 +111,9 @@ export default function PhotoFormScreen() {
       });
 
       if (res.ok) {
-        await cachePhoto(form.name, photo);
+        const { _id } = await res.json();
+        console.log("Item created with ID:", _id);
+        await cachePhoto(_id, photo);
         Alert.alert("Success", "Item submitted successfully!");
         setForm({ name: "", age: "", price: "", description: "", category: "" });
         setPhoto(null);
