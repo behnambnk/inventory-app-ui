@@ -6,24 +6,26 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { ThemeProvider } from "./context/theme";
-
 import ItemsStack from "./ItemsStack";
 import SettingsScreen from "./screens/SettingsScreen";
-
-import SensorsScreen from "./screens/SensorsScreen";
-import NotificationsScreen from "./screens/NotificationsScreen";
 import PhotoFormScreen from "./screens/PhotoFormScreen";
 import SplashScreen from "./screens/SplashScreen";
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+
 function BottomTabs() {
   return (
     <Tab.Navigator
+    
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: { backgroundColor: "#4f6d7a" },
+        tabBarStyle: {
+          backgroundColor: "#4f6d7a",
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+        },
         tabBarActiveTintColor: "#fff",
         tabBarInactiveTintColor: "#cfd8dc",
         tabBarIcon: ({ color, size }) => {
@@ -32,20 +34,11 @@ function BottomTabs() {
             case "Items":
               iconName = "boxes";
               break;
-            case "Camera":
-              iconName = "camera";
+            case "Form":
+              iconName = "plus-circle";
               break;
             case "Settings":
               iconName = "cog";
-              break;
-            case "Notifications":
-              iconName = "bell";
-              break;
-            case "Sensors":
-              iconName = "mobile-alt";
-              break;
-            case "Form":
-              iconName = "plus-circle";
               break;
             default:
               iconName = "circle";
@@ -56,9 +49,6 @@ function BottomTabs() {
     >
       <Tab.Screen name="Items" component={ItemsStack} />
       <Tab.Screen name="Form" component={PhotoFormScreen} />
-      
-      <Tab.Screen name="Sensors" component={SensorsScreen} />
-      <Tab.Screen name="Notifications" component={NotificationsScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );

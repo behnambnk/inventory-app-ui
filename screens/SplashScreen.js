@@ -7,7 +7,7 @@ export default function SplashScreen() {
 
   useEffect(() => {
     setTimeout(() => {
-      navigation.replace("Root"); // چون Root همون BottomTabs هست
+      navigation.replace("Root"); // 
     }, 2000);
   }, []);
 

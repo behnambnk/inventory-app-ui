@@ -1,31 +1,23 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesome5 } from "@expo/vector-icons";
 
 import ItemsStack from "../ItemsStack";
+import PhotoFormScreen from "../screens/PhotoFormScreen";
 import SettingsScreen from "../screens/SettingsScreen";
-import CameraScreen from "../screens/CameraScreen";
-import NotificationsScreen from "../screens/NotificationsScreen";
-import SensorsScreen from "../screens/SensorsScreen";
-
-import * as Notifications from "expo-notifications";
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabs() {
-  // OPTIONAL: Handle notifications globally
-  useEffect(() => {
-    const subscription = Notifications.addNotificationReceivedListener(notification => {
-      console.log("📩 Notification received:", notification);
-    });
-    return () => subscription.remove();
-  }, []);
-
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: { backgroundColor: "#4f6d7a" },
+        tabBarStyle: {
+          backgroundColor: "#4f6d7a",
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
+        },
         tabBarActiveTintColor: "#fff",
         tabBarInactiveTintColor: "#cfd8dc",
         tabBarIcon: ({ color, size }) => {
@@ -34,14 +26,8 @@ export default function BottomTabs() {
             case "Items":
               iconName = "boxes";
               break;
-            case "Camera":
-              iconName = "camera";
-              break;
-            case "Notifications":
-              iconName = "bell";
-              break;
-            case "Sensors":
-              iconName = "mobile-alt";
+            case "Form":
+              iconName = "plus-circle";
               break;
             case "Settings":
               iconName = "cog";
@@ -54,9 +40,7 @@ export default function BottomTabs() {
       })}
     >
       <Tab.Screen name="Items" component={ItemsStack} />
-      <Tab.Screen name="Camera" component={CameraScreen} />
-      <Tab.Screen name="Notifications" component={NotificationsScreen} />
-      <Tab.Screen name="Sensors" component={SensorsScreen} />
+      <Tab.Screen name="Form" component={PhotoFormScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );
