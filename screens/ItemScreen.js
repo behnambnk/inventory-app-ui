@@ -5,6 +5,7 @@ import {
     ActivityIndicator,
     StyleSheet,
     Animated,
+    Share,
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { GlobalLayout } from "../components/Layout";
@@ -12,6 +13,8 @@ import { Feather } from "@expo/vector-icons";
 import PageHeader from "../components/PageHeader";
 import { Image } from "react-native";
 import * as FileSystem from "expo-file-system";
+import * as Linking from "expo-linking";
+
 
 export default function ItemScreen() {
     const { id } = useRoute().params;
@@ -21,6 +24,17 @@ export default function ItemScreen() {
     const [loading, setLoading] = useState(true);
     const [fadeAnim] = useState(new Animated.Value(0));
     const [imageUri, setImageUri] = useState(null);
+
+    const handleShare = async () => {
+        try {
+            const url = Linking.createURL(`/item/${item._id}`);
+            await Share.share({
+                message: url,
+            });
+        } catch (error) {
+            alert("Error sharing item: " + error.message);
+        }
+    };
 
     useEffect(() => {
         const fetchItem = async () => {
@@ -79,10 +93,18 @@ export default function ItemScreen() {
         <GlobalLayout>
             <PageHeader title="Item Details" />
             <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-                <View style={styles.row}>
-                    <Feather name="dollar-sign" size={18} color="#4f6d7a" />
-                    <Text style={styles.label}>Price:</Text>
-                    <Text style={styles.value}>${item.price}</Text>
+                <View style={[styles.row, { justifyContent: "space-between" }]}>
+                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                        <Feather name="dollar-sign" size={18} color="#4f6d7a" />
+                        <Text style={styles.label}>Price:</Text>
+                        <Text style={styles.value}>${item.price}</Text>
+                    </View>
+                    <Feather
+                        name="share-2"
+                        size={20}
+                        color="#4f6d7a"
+                        onPress={handleShare}
+                    />
                 </View>
 
                 <View style={styles.row}>
@@ -156,5 +178,5 @@ const styles = StyleSheet.create({
         height: 200,
         borderRadius: 10,
         marginBottom: 16,
-      }
+    }
 });

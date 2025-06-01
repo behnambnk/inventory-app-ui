@@ -12,6 +12,8 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "scheme": "inventory-app",
+    "deepLinking": "true",
     "ios": {
       "supportsTablet": true
     },

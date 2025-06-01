@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import * as Linking from "expo-linking";
 
 import { ThemeProvider } from "./context/theme";
 import ItemsStack from "./ItemsStack";
@@ -14,6 +15,26 @@ import SplashScreen from "./screens/SplashScreen";
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
+
+const linking = {
+  prefixes: [Linking.createURL('/')],
+  config: {
+    screens: {
+      Root: {
+        screens: {
+          Items: {
+            screens: {
+              Items: "items",
+              Item: "item/:id"
+            }
+          },
+          Form: "form",
+          Settings: "settings"
+        }
+      }
+    }
+  }
+};
 
 function BottomTabs() {
   return (
@@ -57,7 +78,7 @@ function BottomTabs() {
 export default function App() {
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <ThemeProvider>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Splash" component={SplashScreen} />
