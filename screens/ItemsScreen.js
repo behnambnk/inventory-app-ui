@@ -14,6 +14,7 @@ import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import PageHeader from "../components/PageHeader";
 import { Swipeable } from 'react-native-gesture-handler';
 
+
 export default function ItemsScreen() {
   const [items, setItems] = useState([]);
   const [fadeAnim] = useState(new Animated.Value(0));
@@ -23,21 +24,60 @@ export default function ItemsScreen() {
   const handleItemPress = (item) => {
     navigation.navigate("Item", { id: item._id });
   };
-
-  const renderRightActions = (onDelete) => (
-    <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
-      <Feather name="trash" size={20} color="white" />
-      <Text style={styles.deleteText}>Delete</Text>
-    </TouchableOpacity>
-  );
   
-  const SwipeableItem = ({ item, onDelete, onPress }) => (
-    <Swipeable renderRightActions={() => renderRightActions(() => onDelete(item._id))}>
-      <TouchableOpacity onPress={() => onPress(item._id)} style={styles.itemContainer}>
-        <Text style={styles.itemText}>{item.title || 'Untitled Item'}</Text>
+  const handleDelete = async (id) => {
+    console.log("Deleting item with id:", id);
+    try {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_BASE_URL}/api/items/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${process.env.EXPO_PUBLIC_BASE_TOKEN}`,
+          "Content-Type": "application/json",
+        },
+      });
+  
+      if (response.ok) {
+        setItems((prevItems) => prevItems.filter((item) => item._id !== id));
+      } else {
+        console.error("Failed to delete item");
+      }
+    } catch (error) {
+      console.error("Delete error:", error);
+    }
+  };
+
+  const SwipeableRow = ({ item, onDelete, onPress }) => {
+    const renderRightActions = () => (
+      <TouchableOpacity
+        onPress={() => onDelete(item._id)}
+        style={{
+          backgroundColor: "#e53935",
+          justifyContent: "center",
+          alignItems: "center",
+          width: 80,
+          height: "100%",
+        }}
+      >
+        <Feather name="trash" size={20} color="white" />
+        <Text style={{ color: "white", fontSize: 12, fontWeight: "bold", marginTop: 4 }}>Delete</Text>
       </TouchableOpacity>
-    </Swipeable>
-  );
+    );
+  
+    return (
+      <Swipeable renderRightActions={renderRightActions}>
+        <TouchableOpacity
+          onPress={() => onPress(item)}
+          style={styles.row}
+        >
+          <Feather name="tag" size={18} color="#4f6d7a" style={styles.icon} />
+          <Text style={styles.cell}>{item.name}</Text>
+          <Text style={styles.cell}>${item.price}</Text>
+          <Text style={styles.cell}>{item.age}</Text>
+          <Feather name="chevron-right" size={20} color="#999" style={styles.arrow} />
+        </TouchableOpacity>
+      </Swipeable>
+    );
+  };
 
   const fetchItems = async () => {
     try {
@@ -91,16 +131,7 @@ export default function ItemsScreen() {
           data={items}
           keyExtractor={(item) => item._id}
           renderItem={({ item }) => (
-            <TouchableOpacity
-              onPress={() => handleItemPress(item)}
-              style={styles.row}
-            >
-              <Feather name="tag" size={18} color="#4f6d7a" style={styles.icon} />
-              <Text style={styles.cell}>{item.name}</Text>
-              <Text style={styles.cell}>${item.price}</Text>
-              <Text style={styles.cell}>{item.age}</Text>
-              <Feather name="chevron-right" size={20} color="#999" style={styles.arrow} />
-            </TouchableOpacity>
+            <SwipeableRow item={item} onDelete={handleDelete} onPress={()=> handleItemPress(item)}></SwipeableRow>
           )}
         />
       </Animated.View>
