@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useLayoutEffect } from "react";
 import {
     View,
     Text,
@@ -6,6 +6,7 @@ import {
     StyleSheet,
     Animated,
     Share,
+    TouchableOpacity,
 } from "react-native";
 import { useRoute, useNavigation } from "@react-navigation/native";
 import { GlobalLayout } from "../components/Layout";
@@ -35,6 +36,24 @@ export default function ItemScreen() {
             alert("Error sharing item: " + error.message);
         }
     };
+    useLayoutEffect(() => {
+        navigation.setOptions({
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                if (navigation.canGoBack()) {
+                  navigation.goBack();
+                } else {
+                  navigation.navigate("ItemsList");
+                }
+              }}
+              style={{ paddingHorizontal: 12 }}
+            >
+              <Text style={{ fontSize: 20, color: '#4f6d7a' }}>←</Text>
+            </TouchableOpacity>
+          ),
+        });
+      }, [navigation]);
 
     useEffect(() => {
         const fetchItem = async () => {
@@ -91,48 +110,48 @@ export default function ItemScreen() {
 
     return (
         <GlobalLayout>
-            <PageHeader title="Item Details" />
-            <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
-                <View style={[styles.row, { justifyContent: "space-between" }]}>
-                    <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-                        <Feather name="dollar-sign" size={18} color="#4f6d7a" />
-                        <Text style={styles.label}>Price:</Text>
-                        <Text style={styles.value}>${item.price}</Text>
+                <PageHeader title="Item Details" />
+                <Animated.View style={[styles.container, { opacity: fadeAnim }]}>
+                    <View style={[styles.row, { justifyContent: "space-between" }]}>
+                        <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+                            <Feather name="dollar-sign" size={18} color="#4f6d7a" />
+                            <Text style={styles.label}>Price:</Text>
+                            <Text style={styles.value}>${item.price}</Text>
+                        </View>
+                        <Feather
+                            name="share-2"
+                            size={20}
+                            color="#4f6d7a"
+                            onPress={handleShare}
+                        />
                     </View>
-                    <Feather
-                        name="share-2"
-                        size={20}
-                        color="#4f6d7a"
-                        onPress={handleShare}
-                    />
-                </View>
 
-                <View style={styles.row}>
-                    <Feather name="calendar" size={18} color="#4f6d7a" />
-                    <Text style={styles.label}>Age:</Text>
-                    <Text style={styles.value}>{item.age}</Text>
-                </View>
+                    <View style={styles.row}>
+                        <Feather name="calendar" size={18} color="#4f6d7a" />
+                        <Text style={styles.label}>Age:</Text>
+                        <Text style={styles.value}>{item.age}</Text>
+                    </View>
 
-                <View style={styles.row}>
-                    <Feather name="info" size={18} color="#4f6d7a" />
-                    <Text style={styles.label}>Description:</Text>
-                </View>
-                <Text style={styles.description}>{item.description || "No description provided."}</Text>
-                {imageUri && (
-                    <Image source={{ uri: imageUri }} style={styles.image} />
-                )}
-                <View style={styles.row}>
-                    <Feather name="map-pin" size={18} color="#4f6d7a" />
-                    <Text style={styles.label}>Latitude:</Text>
-                    <Text style={styles.value}>{item.latitude || "N/A"}</Text>
-                </View>
+                    <View style={styles.row}>
+                        <Feather name="info" size={18} color="#4f6d7a" />
+                        <Text style={styles.label}>Description:</Text>
+                    </View>
+                    <Text style={styles.description}>{item.description || "No description provided."}</Text>
+                    {imageUri && (
+                        <Image source={{ uri: imageUri }} style={styles.image} />
+                    )}
+                    <View style={styles.row}>
+                        <Feather name="map-pin" size={18} color="#4f6d7a" />
+                        <Text style={styles.label}>Latitude:</Text>
+                        <Text style={styles.value}>{item.latitude || "N/A"}</Text>
+                    </View>
 
-                <View style={styles.row}>
-                    <Feather name="map-pin" size={18} color="#4f6d7a" />
-                    <Text style={styles.label}>Longitude:</Text>
-                    <Text style={styles.value}>{item.longitude || "N/A"}</Text>
-                </View>
-            </Animated.View>
+                    <View style={styles.row}>
+                        <Feather name="map-pin" size={18} color="#4f6d7a" />
+                        <Text style={styles.label}>Longitude:</Text>
+                        <Text style={styles.value}>{item.longitude || "N/A"}</Text>
+                    </View>
+                </Animated.View>
         </GlobalLayout>
     );
 }

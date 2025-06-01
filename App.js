@@ -1,40 +1,23 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import * as Linking from "expo-linking";
-
+import 'react-native-gesture-handler';
 import { ThemeProvider } from "./context/theme";
 import ItemsStack from "./ItemsStack";
 import SettingsScreen from "./screens/SettingsScreen";
 import PhotoFormScreen from "./screens/PhotoFormScreen";
 import SplashScreen from "./screens/SplashScreen";
+import { createNavigationContainerRef } from "@react-navigation/native";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
+const navigationRef = createNavigationContainerRef();
 
-
-const linking = {
-  prefixes: [Linking.createURL('/')],
-  config: {
-    screens: {
-      Root: {
-        screens: {
-          Items: {
-            screens: {
-              Items: "items",
-              Item: "item/:id"
-            }
-          },
-          Form: "form",
-          Settings: "settings"
-        }
-      }
-    }
-  }
-};
 
 function BottomTabs() {
   return (
@@ -76,9 +59,33 @@ function BottomTabs() {
 }
 
 export default function App() {
+
+  const linking = {
+    prefixes: [Linking.createURL("/")], // includes your scheme, e.g. inventory-app://
+    config: {
+      screens: {
+        Root: {
+          screens: {
+            Items: {
+              screens: {
+                ItemsList: "items",
+                Item: "item/:id", // dynamic route
+              },
+            },
+            Form: "form",
+            Settings: "settings",
+          },
+        },
+        Splash: "splash",
+      },
+    },
+  };
+
   return (
     <SafeAreaProvider>
-      <NavigationContainer linking={linking}>
+      
+      <GestureHandlerRootView>
+      <NavigationContainer ref={navigationRef} linking={linking}>
         <ThemeProvider>
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Splash" component={SplashScreen} />
@@ -86,6 +93,7 @@ export default function App() {
           </Stack.Navigator>
         </ThemeProvider>
       </NavigationContainer>
+      </GestureHandlerRootView>
     </SafeAreaProvider>
   );
 }

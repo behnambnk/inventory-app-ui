@@ -12,6 +12,7 @@ import { GlobalStyles } from "../styles/global";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import PageHeader from "../components/PageHeader";
+import { Swipeable } from 'react-native-gesture-handler';
 
 export default function ItemsScreen() {
   const [items, setItems] = useState([]);
@@ -22,6 +23,21 @@ export default function ItemsScreen() {
   const handleItemPress = (item) => {
     navigation.navigate("Item", { id: item._id });
   };
+
+  const renderRightActions = (onDelete) => (
+    <TouchableOpacity style={styles.deleteButton} onPress={onDelete}>
+      <Feather name="trash" size={20} color="white" />
+      <Text style={styles.deleteText}>Delete</Text>
+    </TouchableOpacity>
+  );
+  
+  const SwipeableItem = ({ item, onDelete, onPress }) => (
+    <Swipeable renderRightActions={() => renderRightActions(() => onDelete(item._id))}>
+      <TouchableOpacity onPress={() => onPress(item._id)} style={styles.itemContainer}>
+        <Text style={styles.itemText}>{item.title || 'Untitled Item'}</Text>
+      </TouchableOpacity>
+    </Swipeable>
+  );
 
   const fetchItems = async () => {
     try {

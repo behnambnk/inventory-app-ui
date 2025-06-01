@@ -65,23 +65,6 @@ export default function SettingsScreen() {
 
   return (
     <GlobalLayout>
-      <View style={styles.section}>
-        <View style={styles.row}>
-          <Feather name="type" size={24} color="#4f6d7a" />
-          <Text style={[globalStyles.text, styles.label]}>Large Text</Text>
-          <Switch
-            value={isLargeText}
-            onValueChange={handleTextSizeToggle}
-            trackColor={{ false: "#767577", true: "#81b0ff" }}
-          />
-        </View>
-      </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Send Test Notification</Text>
-        <Button title="Send Notification" onPress={sendNotification} color="#4f6d7a" />
-      </View>
-
       <View style={[styles.section, { backgroundColor: bgColor }]}>
         <Text style={styles.sectionTitle}>Accelerometer</Text>
         <Text>X: {accelData.x.toFixed(2)}</Text>

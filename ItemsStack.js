@@ -4,10 +4,10 @@ import ItemScreen from './screens/ItemScreen'; // item details screen
 
 const Stack = createNativeStackNavigator();
 
-export default function ItemsStack() {
+export default function     ItemsStack() {
   return (
     <Stack.Navigator>
-      <Stack.Screen name="Items" component={ItemsScreen} />
+      <Stack.Screen name="ItemsList" component={ItemsScreen} options={{ headerShown: true, title: "Item Details" }} />
       <Stack.Screen name="Item" component={ItemScreen} /> 
     </Stack.Navigator>
   );
